@@ -6,7 +6,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class CyouAgentDbHelper extends SQLiteOpenHelper {
+public class UnicornDbHelper extends SQLiteOpenHelper {
 	public static final int DATABASE_VERSION = 1;
 	public static final String DATABASE_NAME = "CyouAgent.db";
 
@@ -21,7 +21,7 @@ public class CyouAgentDbHelper extends SQLiteOpenHelper {
 	private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS "
 			+ EventEntry.TABLE_NAME;
 
-	public CyouAgentDbHelper(Context context) {
+	public UnicornDbHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 
@@ -33,4 +33,5 @@ public class CyouAgentDbHelper extends SQLiteOpenHelper {
 		db.execSQL(SQL_DELETE_ENTRIES);
 		onCreate(db);
 	}
+	
 }

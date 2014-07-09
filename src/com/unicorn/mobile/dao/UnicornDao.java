@@ -10,13 +10,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-public class CyouAgentDao {
+public class UnicornDao {
 	
-	private static CyouAgentDbHelper mDbHelper;
+	private static UnicornDbHelper mDbHelper;
 	private SQLiteDatabase mDatabase;
 	
-	public CyouAgentDao(Context ctx) {
-		mDbHelper = new CyouAgentDbHelper(ctx);
+	public UnicornDao(Context ctx) {
+		mDbHelper = new UnicornDbHelper(ctx);
 	}
 	
 	public long insert(EventModel model) {

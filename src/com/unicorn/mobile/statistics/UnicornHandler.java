@@ -16,7 +16,7 @@ import android.util.Log;
 import com.unicorn.mobile.common.CommonUtil;
 import com.unicorn.mobile.common.Constant;
 import com.unicorn.mobile.common.ReportTimeManager;
-import com.unicorn.mobile.dao.CyouAgentDao;
+import com.unicorn.mobile.dao.UnicornDao;
 import com.unicorn.mobile.dao.EventModel;
 import com.unicorn.mobile.net.NetworkClient;
 import com.unicorn.mobile.net.NetworkClientFactory;
@@ -192,7 +192,7 @@ public class UnicornHandler extends Handler {
 
     private void preserveEvent(int eventId, Map<String, String> eventMap) {
         EventModel eventModel = new EventModel(eventId, CommonUtil.formatToJsonObj(eventMap));
-        CyouAgentDao cDao = new CyouAgentDao(mContext);
+        UnicornDao cDao = new UnicornDao(mContext);
         cDao.insert(eventModel);
     }
 

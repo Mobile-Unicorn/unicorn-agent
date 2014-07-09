@@ -67,6 +67,7 @@ public class UnicornAgent {
 	 * @param eventMap
 	 */
 	public static void onEvent(Context ctx, int eventId, Map<String, String> eventMap) {
+		sContext = ctx.getApplicationContext();
 		onEvent(ctx, eventId, eventMap, false);
 	}
 	
@@ -75,7 +76,8 @@ public class UnicornAgent {
 	 * @param ctx
 	 * @param eventId
 	 * @param eventMap
-	 * @param mode true--real-time false--otherwise
+	 * @param mode
+	 *            true--"real-time", false--"non-real-time"
 	 */
 	public static void onEvent(Context ctx, int eventId, Map<String, String> eventMap, boolean mode) {
 		sContext = ctx.getApplicationContext();
