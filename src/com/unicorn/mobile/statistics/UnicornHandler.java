@@ -11,7 +11,6 @@ import android.content.SharedPreferences.Editor;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.unicorn.mobile.common.CommonUtil;
@@ -34,16 +33,19 @@ public class UnicornHandler extends Handler {
         super(looper);
     }
 
-    public static synchronized UnicornHandler getInstance(Looper looper) {
+    public static synchronized UnicornHandler getInstance(Context context, Looper looper) {
         if (sCyouHandler == null) {
             sCyouHandler = new UnicornHandler(looper);
+            sCyouHandler.init(context);
         }
         return sCyouHandler;
     }
-
-    public void init(Context ctx) {
-        mContext = ctx;
-        validateMetaData();
+    
+    private void init(Context context) {
+    	mContext = context;
+    	mAppKey = CommonUtil.getAppKey(context);
+        mChannel = CommonUtil.getChannel(context);
+        mBaseUrl = CommonUtil.getBaseUrl(context);
     }
 
     @SuppressWarnings("unchecked")
@@ -76,7 +78,7 @@ public class UnicornHandler extends Handler {
     }
 
     private void uploadNewUser(Map<String, String> map) {
-        if (!CommonUtil.isNetworkAvailable(mContext) || !validateMetaData())
+        if (!CommonUtil.isNetworkAvailable(mContext))
             return;
 
         map.put("app_key", mAppKey);
@@ -103,7 +105,7 @@ public class UnicornHandler extends Handler {
     }
 
     private void uploadActiveUser(Map<String, String> deviceMap) {
-        if (!CommonUtil.isNetworkAvailable(mContext) || !validateMetaData())
+        if (!CommonUtil.isNetworkAvailable(mContext))
             return;
 
         deviceMap.put("app_key", mAppKey);
@@ -129,7 +131,7 @@ public class UnicornHandler extends Handler {
     }
 
     private void uploadEvent(int eventId, Map<String, String> eventMap) {
-        if (!CommonUtil.isNetworkAvailable(mContext) || !validateMetaData())
+        if (!CommonUtil.isNetworkAvailable(mContext))
             return;
         eventMap.put("eid", Integer.toString(eventId));
         eventMap.put("app_key", mAppKey);
@@ -153,7 +155,7 @@ public class UnicornHandler extends Handler {
     }
 
     private void uploadCrash(Map<String, String> crashMap) {
-        if (!CommonUtil.isNetworkAvailable(mContext) || !validateMetaData())
+        if (!CommonUtil.isNetworkAvailable(mContext))
             return;
 
         Map<String, String> paramMap = new HashMap<String, String>();
@@ -213,19 +215,6 @@ public class UnicornHandler extends Handler {
         editor.putString("conn", deviceMap.get("conn"));
 
         editor.commit();
-    }
-
-    private boolean validateMetaData() {
-        if (invalidMetaData()) {
-            mAppKey = CommonUtil.getAppKey(mContext);
-            mChannel = CommonUtil.getChannel(mContext);
-            mBaseUrl = CommonUtil.getBaseUrl(mContext);
-        }
-        return !invalidMetaData();
-    }
-
-    private boolean invalidMetaData() {
-        return TextUtils.isEmpty(mAppKey) || TextUtils.isEmpty(mChannel) || TextUtils.isEmpty(mBaseUrl);
     }
 
 }

@@ -21,8 +21,7 @@ public class ReportTimeManager {
 		if (reportimeMap.containsKey(USR_ADD_REPORT)) {
 			interval = curTime - reportimeMap.get(USR_ADD_REPORT);
 		} else {
-			SharedPreferences sPref = ctx.getSharedPreferences(
-					Constant.REPORT_RECORD, Context.MODE_PRIVATE);
+			SharedPreferences sPref = ctx.getSharedPreferences(Constant.REPORT_RECORD, Context.MODE_PRIVATE);
 			interval = curTime - sPref.getLong(USR_ADD_REPORT, 0L);
 		}
 
@@ -35,8 +34,7 @@ public class ReportTimeManager {
 		if (reportimeMap.containsKey(USR_ACTIVE_REPORT)) {
 			interval = curTime - reportimeMap.get(USR_ACTIVE_REPORT);
 		} else {
-			SharedPreferences sPref = ctx.getSharedPreferences(
-					Constant.REPORT_RECORD, Context.MODE_PRIVATE);
+			SharedPreferences sPref = ctx.getSharedPreferences(Constant.REPORT_RECORD, Context.MODE_PRIVATE);
 			interval = curTime - sPref.getLong(USR_ACTIVE_REPORT, 0L);
 		}
 		
@@ -59,8 +57,7 @@ public class ReportTimeManager {
 	public static boolean needCrashReport(Context ctx) {
 		long curTime = System.currentTimeMillis();
 		long interval;
-		SharedPreferences sPref = ctx.getSharedPreferences(Constant.REPORT_RECORD,
-				Context.MODE_PRIVATE);
+		SharedPreferences sPref = ctx.getSharedPreferences(Constant.REPORT_RECORD, Context.MODE_PRIVATE);
 		interval = curTime - sPref.getLong(CRASH_REPORT, 0L);
 
 		return !(interval > 0 && interval < Constant.CRASH_REPORT_INTERVAL);
@@ -68,10 +65,10 @@ public class ReportTimeManager {
 
 	public static void recordTime(Context ctx, String key, Long value) {
 		reportimeMap.put(key, value);
-		SharedPreferences sPref = ctx.getSharedPreferences(Constant.REPORT_RECORD,
-				Context.MODE_PRIVATE);
+		SharedPreferences sPref = ctx.getSharedPreferences(Constant.REPORT_RECORD, Context.MODE_PRIVATE);
 		Editor editor = sPref.edit();
 		editor.putLong(key, value);
 		editor.commit();
 	}
+	
 }

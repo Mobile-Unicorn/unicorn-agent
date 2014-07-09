@@ -2,16 +2,17 @@ package com.unicorn.mobile.statistics;
 
 import java.util.Map;
 
-import com.unicorn.mobile.common.Constant;
-import com.unicorn.mobile.common.DeviceInfo;
-import com.unicorn.mobile.common.DeviceUtil;
-import com.unicorn.mobile.common.ReportTimeManager;
-
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.HandlerThread;
+import android.os.Message;
+
+import com.unicorn.mobile.common.Constant;
+import com.unicorn.mobile.common.DeviceInfo;
+import com.unicorn.mobile.common.DeviceUtil;
+import com.unicorn.mobile.common.ReportTimeManager;
 
 public class UnicornAgent {
 	private static Context sContext;
@@ -28,8 +29,7 @@ public class UnicornAgent {
 		sContext = app;
 		sHandlerThread = new HandlerThread(Constant.TAG, android.os.Process.THREAD_PRIORITY_BACKGROUND);
 		sHandlerThread.start();
-		sHandler = UnicornHandler.getInstance(sHandlerThread.getLooper());
-		sHandler.init(app);
+		sHandler = UnicornHandler.getInstance(app, sHandlerThread.getLooper());
 		
 		// updateServerConfig();
 	}
@@ -44,13 +44,20 @@ public class UnicornAgent {
 	public static void onResume(Activity ac) {
 		sContext = ac.getApplicationContext();
 		revive();
-		doUserUpload();
+
+		if (ReportTimeManager.needAddUsrReport(sContext)) {
+			doUserUpload();
+		}
+		
 	}
 
 	public static void onPause(Activity ac) {
 		sContext = ac.getApplicationContext();
 		revive();
-		doUserUpload();
+
+		if (ReportTimeManager.needAddUsrReport(sContext)) {
+			doUserUpload();
+		}
 	}
 
 	/**
@@ -73,10 +80,14 @@ public class UnicornAgent {
 	public static void onEvent(Context ctx, int eventId, Map<String, String> eventMap, boolean mode) {
 		sContext = ctx.getApplicationContext();
 		revive();
+		
+		Message eventMsg;
 		if (mode) {
-			sHandler.sendMessage(sHandler.obtainMessage(Constant.REAL_EVENT_REPORT, eventId, 0, eventMap));
+			eventMsg = sHandler.obtainMessage(Constant.REAL_EVENT_REPORT, eventId, 0, eventMap);
+			sHandler.sendMessage(eventMsg);
 		} else {
-			sHandler.sendMessage(sHandler.obtainMessage(Constant.PRESERVE_EVENT_REPORT, eventId, 0, eventMap));
+			eventMsg = sHandler.obtainMessage(Constant.PRESERVE_EVENT_REPORT, eventId, 0, eventMap);
+			sHandler.sendMessage(eventMsg);
 		}
 	}
 
@@ -93,25 +104,23 @@ public class UnicornAgent {
 		if (sHandler == null || sHandler.getLooper() == null) {
 			sHandlerThread = new HandlerThread(Constant.TAG, android.os.Process.THREAD_PRIORITY_BACKGROUND);
 			sHandlerThread.start();
-			sHandler = UnicornHandler.getInstance(sHandlerThread.getLooper());
+			sHandler = UnicornHandler.getInstance(sContext, sHandlerThread.getLooper());
 		}
-		sHandler.init(sContext);
 	}
 
 	private static void doUserUpload() {
-		SharedPreferences sPref = sContext.getSharedPreferences(
-				Constant.USER_RECORD, Context.MODE_PRIVATE);
 		DeviceInfo deviceInfo = new DeviceInfo(sContext);
+		SharedPreferences sPref = sContext.getSharedPreferences(Constant.USER_RECORD, Context.MODE_PRIVATE);
 		boolean valid = sPref.getBoolean("valid", false);
 		if (!valid) {
-			if (ReportTimeManager.needAddUsrReport(sContext)) {
-				deviceInfo.build();
-				Map<String, String> model = deviceInfo.parse();
-				sHandler.sendMessage(sHandler.obtainMessage(Constant.USER_NEW_REPORT, model));
-			}
-		} else if (ReportTimeManager.needActiveUsrReport(sContext)) {
+			deviceInfo.build();
+			Map<String, String> model = deviceInfo.parse();
+			Message msg = sHandler.obtainMessage(Constant.USER_NEW_REPORT, model);
+			sHandler.sendMessage(msg);
+		} else {
 			Map<String, String> record = deviceInfo.recover();
-			sHandler.sendMessage(sHandler.obtainMessage(Constant.USER_ACTIVE_REPORT, record));
+			Message msg = sHandler.obtainMessage(Constant.USER_ACTIVE_REPORT, record);
+			sHandler.sendMessage(msg);
 		}
 	}
 }

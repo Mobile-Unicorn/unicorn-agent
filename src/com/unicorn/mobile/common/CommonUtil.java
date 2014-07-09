@@ -115,22 +115,16 @@ public final class CommonUtil {
 	 * @param ctx
 	 * @return
 	 */
-	public static boolean isNetworkAvailable(Context ctx) {
-		ConnectivityManager connectivity = (ConnectivityManager) ctx
+	public static boolean isNetworkAvailable(Context context) {
+		ConnectivityManager connectivity = (ConnectivityManager) context
 				.getSystemService(Context.CONNECTIVITY_SERVICE);
-		if (connectivity == null) {
-			return false;
-		} else {
-			NetworkInfo[] info = connectivity.getAllNetworkInfo();
-			if (info != null && info.length > 0) {
-				for (NetworkInfo element : info) {
-					if (element.getState() == NetworkInfo.State.CONNECTED) {
-						return true;
-					}
-				}
+		if (connectivity != null) {
+			NetworkInfo networkInfo = connectivity.getActiveNetworkInfo();
+			if (networkInfo != null && networkInfo.isConnected()) {
+				return true;
 			}
 		}
-
+		
 		return false;
 	}
 
@@ -193,7 +187,7 @@ public final class CommonUtil {
 	 * @return
 	 */
 	public static String getBaseUrl(Context ctx) {
-		String url = "http://st.c-launcher.com/";
+		String url = "";
 		PackageManager pm = ctx.getPackageManager();
 		try {
 			ApplicationInfo appInfo = pm.getApplicationInfo(ctx.getPackageName(), PackageManager.GET_META_DATA);
@@ -216,7 +210,7 @@ public final class CommonUtil {
 	 * @return
 	 */
 	public static String getChannel(Context ctx) {
-		String channel = "10002";
+		String channel = "";
 		try {
 			PackageManager pm = ctx.getPackageManager();
 			ApplicationInfo appInfo = pm.getApplicationInfo(ctx.getPackageName(), PackageManager.GET_META_DATA);

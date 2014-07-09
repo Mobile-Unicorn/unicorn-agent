@@ -10,5 +10,4 @@ public class NetworkClientFactory {
 
 		return new HttpUrlConnectionNetworkClient();
 	}
-
 }

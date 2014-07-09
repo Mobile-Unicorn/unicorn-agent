@@ -19,8 +19,7 @@ class HttpUrlConnectionNetworkClient implements NetworkClient {
 			throws IOException {
 		OutputStream sendToServer = null;
 		mConnection = getUrlConnection(urlStr);
-		mConnection.setRequestProperty("Content-Length",
-				Integer.toString(content.length));
+		mConnection.setRequestProperty("Content-Length", Integer.toString(content.length));
 		mConnection.setRequestProperty("Connection", "Keep-Alive");
 		mConnection.setRequestMethod("POST");
 		mConnection.setDoOutput(true);
