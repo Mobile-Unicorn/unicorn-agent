@@ -3,7 +3,6 @@ package com.unicorn.mobile.statistics;
 import java.util.Map;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.HandlerThread;
@@ -20,23 +19,29 @@ public class UnicornAgent {
 	private static UnicornHandler sHandler;
 
     // @TODO some configurations from server
-
+	
+	/**
+	 * a method to get the device's uuid
+	 * 
+	 * @param ctx --- context from the application
+	 * @return
+	 */
 	public static String getDeviceUuid(Context ctx) {
 		return DeviceUtil.getUuid(ctx);
 	}
 
-	public static void onConfig(Application app) {
-		sContext = app;
+	public static void onConfig(Context ctx) {
+		sContext = ctx.getApplicationContext();
 		sHandlerThread = new HandlerThread(Constant.TAG, android.os.Process.THREAD_PRIORITY_BACKGROUND);
 		sHandlerThread.start();
-		sHandler = UnicornHandler.getInstance(app, sHandlerThread.getLooper());
+		sHandler = UnicornHandler.getInstance(sContext, sHandlerThread.getLooper());
 		
 		// updateServerConfig();
 	}
 
-	public static void onCrash(Application app) {
+	public static void onCrash(Context ctx) {
 		UnicornCrashHandler crashHandler = UnicornCrashHandler.getInstance();
-		crashHandler.init(app, sHandler);
+		crashHandler.init(ctx.getApplicationContext(), sHandler);
 		// occasion: crash report on the startup
 		crashHandler.reportCrash();
 	}
@@ -101,7 +106,10 @@ public class UnicornAgent {
 	 * 
 	 * }
 	 */
-
+	
+	/**
+	 * recover the handler thread of the report process
+	 */
 	private static void revive() {
 		if (sHandler == null || sHandler.getLooper() == null) {
 			sHandlerThread = new HandlerThread(Constant.TAG, android.os.Process.THREAD_PRIORITY_BACKGROUND);
@@ -125,4 +133,5 @@ public class UnicornAgent {
 			sHandler.sendMessage(msg);
 		}
 	}
+	
 }
