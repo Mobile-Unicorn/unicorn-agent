@@ -18,7 +18,7 @@ public class Constant {
 	public final static long ACTIVE_REPORT_INTERVAL = 3 * 60 * 60 * 1000; // 3h
 	public final static long ADD_REPORT_INTERVAL = 5 * 60 * 1000; // 5min
 
-	public static final String BASE_URL = "BASE_URL";
+	public final static String BASE_URL = "BASE_URL";
 	public final static String APPKEY = "CYOU_APPKEY";
 	public final static String CHANNEL = "CYOU_CHANNEL";
 

@@ -5,5 +5,5 @@ set SUPPORT_JAR=%ANDROID_HOME%\tools\support\annotations.jar
 
 rd /s /q bin
 md bin\classes
-javac -encoding utf-8 -bootclasspath %ANDROID_JAR% -d bin\classes -sourcepath src src\com\cyou\cma\statistics\CyouAgent.java
+javac -encoding utf-8 -bootclasspath %ANDROID_JAR% -d bin\classes -sourcepath src src\com\cyou\cma\statistics\UnicornAgent.java
 jar cf bin\statistic-common.jar -C bin\classes .
